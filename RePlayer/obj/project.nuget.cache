@@ -1,0 +1,11 @@
+{
+  "version": 2,
+  "dgSpecHash": "rqHIG60PT+Z2XN2Yz0gI7KwYMwlBzBkF1YujNi0P7O7/VjEt80Ppelv5iYqHoyUc3j0rXGKhULZtZKjRSuhb7Q==",
+  "success": true,
+  "projectFilePath": "C:\\Users\\kurek\\Source\\Repos\\RePlayer\\RePlayer.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\kurek\\.nuget\\packages\\microsoft.win32.systemevents\\6.0.0\\microsoft.win32.systemevents.6.0.0.nupkg.sha512",
+    "C:\\Users\\kurek\\.nuget\\packages\\system.drawing.common\\6.0.0\\system.drawing.common.6.0.0.nupkg.sha512"
+  ],
+  "logs": []
+}

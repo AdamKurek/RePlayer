@@ -1,0 +1,80 @@
+﻿<Window x:Class="RePlayer.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d"
+        Background="Black" AllowDrop="True" DragDrop.Drop="mePlayer_Drop"  
+        KeyDown="Window_KeyDown" 
+        Title="{Binding FileName,UpdateSourceTrigger=PropertyChanged}"  Height="800" Width="1150">
+
+    <Grid Name="grid">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="auto" />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="50"/>
+            <ColumnDefinition Width="733*"/>
+            <ColumnDefinition Width="249*"/>
+            <ColumnDefinition Width="118*"/>
+        </Grid.ColumnDefinitions>
+        
+        <MediaElement Name="player" LoadedBehavior="Manual"  Grid.RowSpan="2" Grid.ColumnSpan="4" Grid.Row="0" Grid.IsSharedSizeScope="True"
+                      MinHeight="100" MinWidth="100"
+                      ScrubbingEnabled="True"
+                      MouseLeftButtonUp="mePlayer_MouseLeftButtonUp"
+                      MouseMove="mePlayer_MouseMove"
+                      Mouse.MouseWheel="mePlayer_MouseWheel"
+                      MediaOpened="player_MediaOpened"
+                       />
+        
+        <Slider x:Name="slider"
+                VerticalAlignment="Bottom" Focusable="False"
+                IsMoveToPointEnabled="true" Height="18" Grid.Row="0" Minimum="0" Grid.ColumnSpan="4"
+                Value="{Binding TimeSlider ,UpdateSourceTrigger=PropertyChanged}" 
+                Margin="10,0"/>
+        
+        <Button x:Name="soundbtn" Focusable="False" Grid.Row="1"  HorizontalAlignment="Left" Background="#55F5F5F5"  Click="soundbtn_Click" Margin="10,5,0,5">Sound</Button>
+        
+        <StackPanel x:Name="panel" Grid.Row="1" Grid.ColumnSpan="4" Margin="10,5,10,5">
+            <WrapPanel HorizontalAlignment="Center">
+                <Button Name="btnPrevFrame" Click="btnPrevFrame_Click"  Focusable="False" Content="&lt;"></Button>
+                <Button Name="btnNextFrame" Click="btnNextFrame_Click"  Focusable="False" Content="&gt;" ></Button>
+                <Button Name="btnVideosList" Click="btnVideosList_Click" Focusable="False" >files</Button>
+                <Button Name="btnPrevVid" Click="btnPrevVid_Click" Focusable="False">prev</Button>
+                <Button Name="btnNextVid" Click="btnNextVid_Click" Focusable="False">next</Button>
+                <Button Name="btnPlay" Click="btnPlay_Click" Focusable="False">Play</Button>
+                <Button Name="btnSlow" Click="btnSlow_Click" Focusable="False">Slow</Button>
+                <Button Name="btnSpeed" Click="btnSpeed_Click" Focusable="False">Speed</Button>
+                <Label  Name="lblSpeed" FontStretch="Condensed" Focusable="False" Height="25"  Background="AntiqueWhite" ></Label>
+            </WrapPanel>
+        </StackPanel>
+        <Label x:Name="Status" Grid.Row="1"  HorizontalAlignment="Left" Background="#55F5F5F5" Margin="15,0,10,5"  Grid.Column="4" />
+
+        <Slider x:Name="volumeSlider" Grid.Row="0" Grid.Column="0" 
+                Orientation="Vertical" Value="{Binding Volume}" Visibility="Hidden" IsMoveToPointEnabled="True" Focusable="False" 
+                Minimum="0" Maximum="100" Opacity="0.7" MaxHeight="500" MinHeight="100" Margin="15,100,0,100" 
+                
+                />
+
+        <DockPanel x:Name="videosListLayout" LastChildFill="true"  Visibility="Hidden"
+             Grid.Column="1" Grid.RowSpan="2" Grid.ColumnSpan="3" Margin="733,0,0,0">
+            <DockPanel DockPanel.Dock="Top" >
+                <TextBox  Text="{Binding DirectoryPath, UpdateSourceTrigger=PropertyChanged}"  Height="auto" ></TextBox>
+                <Button Content="dir" Click="DirButton_Click"></Button>
+            </DockPanel>
+            <ListView x:Name="videosList" ItemsSource="{Binding Files,UpdateSourceTrigger=PropertyChanged}" SelectedIndex="{Binding FileIndex}" SelectedItem="{Binding SelectedFile}"  Margin="0" >
+                <ListView.View>
+                    <GridView>
+                        <GridViewColumn Header="Name" DisplayMemberBinding="{Binding Name}" Width="200"/>
+                        <GridViewColumn Header="Created" DisplayMemberBinding="{Binding CreationTime}" Width="70"/>
+                    </GridView>
+                </ListView.View>
+            </ListView>
+
+        </DockPanel>
+    </Grid>
+    
+</Window>
