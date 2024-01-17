@@ -1,19 +1,12 @@
 ﻿using System;
-using System.Threading;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Threading;
 using System.Runtime.InteropServices;
 using System.ComponentModel;
 using System.Windows.Controls;
-using System.Windows.Controls.Primitives;
 using System.IO;
-using System.Drawing;
-using System.Windows.Media.Imaging;
-using System.Windows.Markup;
 using System.Windows.Media.Animation;
-using Microsoft.Win32;
-using System.Collections.Generic;
 using System.Linq;
 
 namespace RePlayer
@@ -100,8 +93,14 @@ namespace RePlayer
 		{
             get 
 			{
-				return FilePath.Substring(FilePath.LastIndexOf("\\")+1);
-			}
+				try { 
+					return FilePath.Substring((int)((FilePath?.LastIndexOf("\\"))+1));
+				}
+				catch(Exception ex)
+				{
+					return "";
+				}
+            }
 		}
 		private string filePath;
 		public string FilePath 
@@ -120,7 +119,7 @@ namespace RePlayer
 			}
 		}
 
-		private string directoryPath = @"C:/Users/Kurek/Videos";
+		private string directoryPath = @"C:/Users/Kurek/Videoss";
 		public string DirectoryPath 
 		{
 		get 
@@ -132,13 +131,30 @@ namespace RePlayer
 				directoryPath = value;
 				PropertyChanged(this, new PropertyChangedEventArgs("DirectoryPath"));
 				load_directory();
-
-
 			}
 		}
-		public event PropertyChangedEventHandler PropertyChanged;
-		private FileInfo[] files;
-		public FileInfo[] Files 
+        private string directoryPathEdit { get; set; } = @"C:/Users/Kurek/Videoss";
+        public string DirectoryPathEdit
+        {
+            get
+            {
+                return directoryPathEdit;
+            }
+            set
+            {
+				if (value.EndsWith(Environment.NewLine))
+				{
+					DirectoryPath = directoryPathEdit;
+                    return;
+				}
+				directoryPathEdit = value;
+            }
+        }
+
+        
+        public event PropertyChangedEventHandler PropertyChanged;
+        private FileInfo[] files = new FileInfo[0];
+        public FileInfo[] Files 
 		{
 			get
 			{
@@ -170,7 +186,7 @@ namespace RePlayer
 			} 
 		}
 
-		private string selectedFile=String.Empty;
+		private string selectedFile = String.Empty;
 		public string SelectedFile
 		{
 			get
@@ -180,11 +196,9 @@ namespace RePlayer
 			set
 			{
 				selectedFile = value;
-
 				FilePath = selectedFile;
 			}
 		}
-		//public Icon icon { get; set; } 
 		public MainWindow(string file)
 		{
 			//icon = System.Drawing.Icon.ExtractAssociatedIcon(filePath);
@@ -208,35 +222,34 @@ namespace RePlayer
 		}
 		public MainWindow()
 		{
-			//icon = System.Drawing.Icon.ExtractAssociatedIcon(filePath);//
-			//var xd=this.FindResource("videosDir");
-			//Directory.EnumerateFiles("E:\\medalek");
 			initializePlayer();
 			load_directory();
-			filePath = files[0].FullName;//FilePath?
-				
-			
-			load_video();
+			try { 
+				filePath = files[0].FullName;
+			}
+			catch (Exception e)
+			{
+				;
+            }
+
+            load_video();
 		}
 
 		private void load_directory()
 		{
 			DirectoryInfo directoryInfo = new DirectoryInfo(directoryPath);
 			string[] extensions = new[] { ".mp4", ".mkv"};
-			Files=directoryInfo.EnumerateFiles().Where(f => extensions.Contains(f.Extension.ToLower())).ToArray();
-			if (Files.Length == 0)
-				directoryInfo.GetFiles();
-			Array.Sort(Files, (x, y) => StringComparer.OrdinalIgnoreCase.Compare(y.CreationTime, x.CreationTime));	
+			try
+			{
+				Files = directoryInfo.EnumerateFiles().Where(f => extensions.Contains(f.Extension.ToLower())).ToArray();
+				if (Files.Length == 0)
+					directoryInfo.GetFiles();
+				Array.Sort(Files, (x, y) => StringComparer.OrdinalIgnoreCase.Compare(y.CreationTime, x.CreationTime));
+			}catch(Exception ex)
+			{
+				;
+			}
 		}
-		//<Grid>
-		//        <Grid.ColumnDefinitions>
-		//            <ColumnDefinition/>
-		//        </Grid.ColumnDefinitions>
-		//        <Image Source = "{Binding Icon}" Stretch="Fill" Grid.Column="0" />
-
-		//    </Grid>
-
-
 
 		private void initializePlayer()
 		{
@@ -260,21 +273,17 @@ namespace RePlayer
 		}
 		private void LoadVideoTimmer()
 		{
-
 			if (player.NaturalDuration.HasTimeSpan)
 			{	
 				slider.Maximum = player.NaturalDuration.TimeSpan.TotalMilliseconds;
 				TimeSlider = 0;
 				Status.Content = String.Format("{0} / {1}", player.Position.ToString(@"mm\:ss"), player.NaturalDuration.TimeSpan.ToString(@"mm\:ss"));
 			}
-			
-
 		}
 
 		
 		private void player_MediaOpened(object sender, RoutedEventArgs e)
 		{
-		
 			LoadVideoTimmer();
 		}
 
@@ -296,7 +305,6 @@ namespace RePlayer
 
 				if (player.NaturalDuration.HasTimeSpan)
 				{
-
 					Status.Content = String.Format("{0} / {1}", player.Position.ToString(@"mm\:ss"), player.NaturalDuration.TimeSpan.ToString(@"mm\:ss"));//to potem
 					//if(!update)
 					Time = player.Position.TotalMilliseconds;
@@ -317,8 +325,13 @@ namespace RePlayer
 		private void load_video()
 		{
 			playing = false;
-			player.Source = new Uri(FilePath);
-			lblSpeed.Content = Speed;
+			try { 
+				player.Source = new Uri(FilePath);
+            }catch (Exception ex)
+			{
+				return;
+			}
+            lblSpeed.Content = Speed;
 			if (!player.NaturalDuration.HasTimeSpan)
 			{
 				slider.Visibility = Visibility.Hidden;
@@ -341,7 +354,6 @@ namespace RePlayer
 				return;
 			}
 			Pause();
-
 		}
 
 
@@ -350,7 +362,6 @@ namespace RePlayer
 			playing = true;
 			TimeSlider=player.Position.TotalMilliseconds;//
 			player.Play();
-		
 		}
 		private void Pause()
 		{
@@ -581,24 +592,23 @@ namespace RePlayer
 
         private void btnNextFrame_Click(object sender, RoutedEventArgs e)
         {
-
+			//TODO
 
 			//DoubleAnimation showAnim = new DoubleAnimation();
 			//showAnim.Duration = TimeSpan.FromSeconds(0.3);
 			//showAnim.EasingFunction = new PowerEase() { 
 			//	EasingMode = EasingMode.EaseIn
 			//};
-			
-
 			//showAnim.From = videosListLayout.DesiredSize.Width;
 			//showAnim.To = 0;
-
 			//videosListLayout.BeginAnimation( WidthProperty, showAnim);
 		}
 
         private void btnPrevFrame_Click(object sender, RoutedEventArgs e)
         {
-			
+			//TODO
+
+			//(testing animations (not related)
 			//DoubleAnimation showAnim = new DoubleAnimation();
 			//showAnim.Duration = TimeSpan.FromSeconds(0.3);
 			//showAnim.EasingFunction = new PowerEase()
@@ -606,10 +616,7 @@ namespace RePlayer
 			//	EasingMode = EasingMode.EaseIn
 			//};
 			//showAnim.From = 0;
-			
-
 			//showAnim.To = grid.DesiredSize.Width;
-
 			//videosList.BeginAnimation( LeftProperty, showAnim);
 		}
 

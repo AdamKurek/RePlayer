@@ -33,7 +33,7 @@
         <Slider x:Name="slider"
                 VerticalAlignment="Bottom" Focusable="False"
                 IsMoveToPointEnabled="true" Height="18" Grid.Row="0" Minimum="0" Grid.ColumnSpan="4"
-                Value="{Binding TimeSlider ,UpdateSourceTrigger=PropertyChanged}" 
+                Value="{Binding TimeSlider ,UpdateSourceTrigger = PropertyChanged}" 
                 Margin="10,0"/>
         
         <Button x:Name="soundbtn" Focusable="False" Grid.Row="1"  HorizontalAlignment="Left" Background="#55F5F5F5"  Click="soundbtn_Click" Margin="10,5,0,5">Sound</Button>
@@ -61,15 +61,15 @@
 
         <DockPanel x:Name="videosListLayout" LastChildFill="true"  Visibility="Hidden"
              Grid.Column="1" Grid.RowSpan="2" Grid.ColumnSpan="3" Margin="733,0,0,0">
-            <DockPanel DockPanel.Dock="Top" >
-                <TextBox  Text="{Binding DirectoryPath, UpdateSourceTrigger=PropertyChanged}"  Height="auto" ></TextBox>
-                <Button Content="dir" Click="DirButton_Click"></Button>
+            <DockPanel DockPanel.Dock="Top"  LastChildFill="True" FlowDirection="RightToLeft" >
+                <Button Content="Open Folder" Click="DirButton_Click" ></Button>
+                <TextBox Text="{Binding DirectoryPathEdit, UpdateSourceTrigger = PropertyChanged}" Height="auto" FlowDirection="LeftToRight"></TextBox>
             </DockPanel>
-            <ListView x:Name="videosList" ItemsSource="{Binding Files,UpdateSourceTrigger=PropertyChanged}" SelectedIndex="{Binding FileIndex}" SelectedItem="{Binding SelectedFile}"  Margin="0" >
+            <ListView x:Name="videosList" ItemsSource = "{Binding Files,UpdateSourceTrigger = PropertyChanged}" SelectedIndex="{Binding FileIndex}" SelectedItem="{Binding SelectedFile}" Margin="0" >
                 <ListView.View>
                     <GridView>
-                        <GridViewColumn Header="Name" DisplayMemberBinding="{Binding Name}" Width="200"/>
-                        <GridViewColumn Header="Created" DisplayMemberBinding="{Binding CreationTime}" Width="70"/>
+                        <GridViewColumn Header="Name" DisplayMemberBinding = "{Binding Name}" Width="200"/>
+                        <GridViewColumn Header="Created" DisplayMemberBinding = "{Binding CreationTime}" Width="70"/>
                     </GridView>
                 </ListView.View>
             </ListView>

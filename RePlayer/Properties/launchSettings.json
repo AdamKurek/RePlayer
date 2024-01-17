@@ -1,8 +1,7 @@
 {
   "profiles": {
     "video player": {
-      "commandName": "Project",
-      "commandLineArgs": "C:\\Users\\kurek\\OneDrive\\Pulpit\\Dogs.mp4"
+      "commandName": "Project"
     }
   }
 }
